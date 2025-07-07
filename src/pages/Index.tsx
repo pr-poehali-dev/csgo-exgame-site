@@ -45,6 +45,12 @@ const Index = () => {
     });
   };
 
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text).then(() => {
+      alert("IP адрес скопирован в буфер обмена!");
+    });
+  };
+
   const banList = [
     {
       name: "Player1",
@@ -99,6 +105,25 @@ const Index = () => {
       price: "100₽",
       duration: "месяц",
       color: "bg-gradient-to-r from-blue-400 to-blue-600",
+    },
+  ];
+
+  const servers = [
+    {
+      name: "Паблик",
+      map: "de_mirage_dusk",
+      ip: "185.194.107.196:27415",
+      players: "32/32",
+      status: "online",
+      type: "Классический",
+    },
+    {
+      name: "AWP Сервер",
+      map: "awp_lego_2",
+      ip: "185.194.107.195:27315",
+      players: "16/16",
+      status: "online",
+      type: "AWP Only",
     },
   ];
 
@@ -165,8 +190,14 @@ const Index = () => {
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-12">
-        <Tabs defaultValue="privileges" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 bg-gray-800 border border-orange-500/20">
+        <Tabs defaultValue="servers" className="w-full">
+          <TabsList className="grid w-full grid-cols-4 bg-gray-800 border border-orange-500/20">
+            <TabsTrigger
+              value="servers"
+              className="data-[state=active]:bg-orange-500"
+            >
+              Серверы
+            </TabsTrigger>
             <TabsTrigger
               value="privileges"
               className="data-[state=active]:bg-orange-500"
@@ -186,6 +217,91 @@ const Index = () => {
               Заявка на админа
             </TabsTrigger>
           </TabsList>
+
+          {/* Servers Tab */}
+          <TabsContent value="servers" className="space-y-6">
+            <Card className="bg-gray-800/50 border-gray-700">
+              <CardHeader>
+                <CardTitle className="text-white flex items-center">
+                  <Icon
+                    name="Server"
+                    className="w-5 h-5 mr-2 text-orange-500"
+                  />
+                  Список серверов
+                </CardTitle>
+                <CardDescription className="text-gray-400">
+                  Выберите сервер для игры. Нажмите на IP адрес, чтобы
+                  скопировать его
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {servers.map((server, index) => (
+                    <Card
+                      key={index}
+                      className="bg-gray-700/50 border-gray-600 hover:border-orange-500/50 transition-all duration-300"
+                    >
+                      <CardHeader>
+                        <div className="flex items-center justify-between">
+                          <CardTitle className="text-white text-lg">
+                            {server.name}
+                          </CardTitle>
+                          <Badge
+                            className={
+                              server.status === "online"
+                                ? "bg-green-500"
+                                : "bg-red-500"
+                            }
+                          >
+                            <Icon
+                              name="Circle"
+                              className="w-2 h-2 mr-1 fill-current"
+                            />
+                            {server.status === "online" ? "Онлайн" : "Оффлайн"}
+                          </Badge>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Icon name="Map" className="w-4 h-4 text-gray-400" />
+                          <span className="text-gray-300">{server.map}</span>
+                        </div>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-3">
+                          <div className="flex items-center justify-between">
+                            <span className="text-gray-400">Тип:</span>
+                            <Badge
+                              variant="outline"
+                              className="border-orange-500 text-orange-500"
+                            >
+                              {server.type}
+                            </Badge>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span className="text-gray-400">Игроки:</span>
+                            <span className="text-white font-mono">
+                              {server.players}
+                            </span>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span className="text-gray-400">IP адрес:</span>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => copyToClipboard(server.ip)}
+                              className="text-orange-500 hover:text-orange-400 hover:bg-orange-500/10 font-mono"
+                            >
+                              <Icon name="Copy" className="w-4 h-4 mr-2" />
+                              {server.ip}
+                            </Button>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
           {/* Privileges Tab */}
           <TabsContent value="privileges" className="space-y-6">
